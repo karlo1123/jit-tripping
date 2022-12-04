@@ -24,7 +24,7 @@ local section = tab:Section{
 
 local label = section:Label("Some stuff might not work!!")
 section:Button{
-    Name = "Button",
+    Name = "Silent aim",
     Callback  = function()
     
 local players = game:GetService("Players");
@@ -105,8 +105,24 @@ end);
     end
 }
 
+
+
+local tab = main:Tab("Visuals")
+
+local section = tab:Section{
+    Name = "Esp",
+    Side = "Left"
+}
+
+local label = section:Label("Label")
+
+--label:Set("Label Set")
+
+local seperator = section:Separator("Separator")
+--separator:Set("Separator Set")
+
 local toggle = section:Toggle{
-    Name = "esp",
+    Name = "Esp",
     Flag = "Toggle 1",
     --Default = true,
     Callback  = function(bool)
@@ -234,7 +250,7 @@ local toggle = section:Toggle{
                     })
         
                     esp.drawings.box = create_drawing("Square", {
-                        Color = Color3.fromRGB(93, 63, 211),
+                        Color = Color3.fromRGB(255,10,10),
                         Thickness = 1,
                         ZIndex = -9
                     })
@@ -359,291 +375,73 @@ local toggle = section:Toggle{
         
         create_conection(players.PlayerAdded, function(player)
             cheat_client:add_player_esp(player)
-        end)    
+        end)  
     end
 }
 
 
-local tab = main:Tab("Visuals")
 
-local section = tab:Section{
-    Name = "Legit",
-    Side = "Left"
-}
-
-local label = section:Label("Label")
-
---label:Set("Label Set")
-
-section:Button{
-    Name = "Button",
-    Callback  = function()
-        print("Button clicked")
-    end
-}
-
-local seperator = section:Separator("Separator")
---separator:Set("Separator Set")
-
-local toggle = section:Toggle{
-    Name = "Toggle",
-    Flag = "Toggle 1",
-    --Default = true,
-    Callback  = function(bool)
-        print("Toggle 1 is now " .. (bool and "enabled" or "disabled"))
-    end
-}
-
-local togglepicker1 = toggle:ColorPicker{
-    Default = Color3.fromRGB(255, 0, 0), 
-    Flag = "Toggle 1 Picker 1", 
-    Callback = function(color)
-        print("Toggle 1 Picker 1 is now " .. string.format("%s, %s, %s, %s", math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255), math.floor(color.A * 100) / 100))
-    end
-}
-
---togglepicker1:Set(Color3.fromRGB(255, 255, 255))
-
-local togglepicker2 = toggle:ColorPicker{
-    Default = Color3.fromRGB(0, 255, 0), 
-    Flag = "Toggle 1 Picker 2", 
-    Callback = function(color)
-        print("Toggle 1 Picker 2 is now " .. string.format("%s, %s, %s, %s", math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255), math.floor(color.A * 100) / 100))
-    end
-}
-
---togglepicker2:Set(Color3.fromRGB(255, 255, 255))
 
 --toggle:Toggle(true)
 
 local toggle2 = section:Toggle{
-    Name = "Toggle 2",
+    Name = "Chams",
     Flag = "Toggle 2",
     --Default = true,
     Callback  = function(bool)
-        print("Toggle 2 is now " .. (bool and "enabled" or "disabled"))
-    end
-}
+     -- Settings --
 
-toggle2:Keybind{
-    --Default = Enum.KeyCode.A,
-    Blacklist = {Enum.UserInputType.MouseButton1},
-    Flag = "Toggle 2 Keybind 1",
-    Mode = "Toggle", -- mode to nil if u dont want it to toggle the toggle
-    Callback = function(key, fromsetting)
-        if fromsetting then
-            print("Toggle 2 Keybind 1 is now " .. tostring(key))
-        else
-            print("Toggle 2 Keybind 1 was pressed")
+local settings = {
+   
+    fillcolor = Color3.fromRGB(93, 63, 211);
+    filltransparency = .75;
+    
+    outlinecolor = Color3.fromRGB(255, 255, 255);
+    outlinetransparency = 0;
+    
+ }
+ 
+ -- Script --
+ 
+ local plr = game:service'Players'.LocalPlayer
+ local highlights = Instance.new('Folder', game:service'CoreGui')
+ 
+ local function addhighlight(object)
+    local highlight = Instance.new('Highlight', highlights)
+    highlight.Adornee = object
+    
+    highlight.FillColor = settings.fillcolor
+    highlight.FillTransparency = settings.filltransparency
+    
+    highlight.OutlineColor = settings.outlinecolor
+    highlight.OutlineTransparency = settings.outlinetransparency
+    
+    highlight.Adornee.Changed:Connect(function()
+        if not highlight.Adornee or not highlight.Adornee.Parent then
+            highlight:Destroy()    
         end
+    end)
+    
+    return highlight
+ end
+ 
+ local function addtoplayer(object)
+    if object:IsA'Model' and object.Name == 'Player' and object.Parent.Name ~= tostring(plr.TeamColor) then
+        addhighlight(object)
     end
-}
-
-local toggle3 = section:Toggle{
-    Name = "Toggle 3",
-    Flag = "Toggle 3",
-    --Default = true,
-    Callback  = function(bool)
-        print("Toggle 3 is now " .. (bool and "enabled" or "disabled"))
-    end
-}
-
-toggle3:Slider{
-    Text = "[value]/5",
-    --Default = 5,
-    Min = 0,
-    Max = 5,
-    Float = 0.5,
-    Flag = "Slider 1",
-    Callback = function(value)
-        print("Toggle 3 Slider 1 is now " .. value)
-    end
-}
-
-local toggle4 = section:Toggle{
-    Name = "Toggle 4",
-    Flag = "Toggle 4",
-    --Default = true,
-    Callback  = function(bool)
-        print("Toggle 4 is now " .. (bool and "enabled" or "disabled"))
-    end
-}
-
-toggle4:Dropdown{
-    --Default = "Option 1",
-    Content = {
-        "Option 1",
-        "Option 2",
-        "Option 3"
-    },
-    --Max = 5, -- turns into multidropdown
-    --Scrollable = true, -- makes it scrollable
-    --ScrollingMax = 5, -- caps the amount it contains before scrolling
-    Flag = "Dropdown 1",
-    Callback = function(option)
-        print("Dropdown 1 is now " .. tostring(option))
+ end
+ 
+ for i,v in pairs(workspace.Players:GetDescendants()) do
+    addtoplayer(v)
+ end
+ 
+ workspace.Players.DescendantAdded:Connect(function(v)
+    addtoplayer(v)
+ end)  
     end
 }
 
 
-local box = section:Box{
-    Name = "Box",
-    --Default = "hi",
-    Placeholder = "Box Placeholder",
-    Flag = "Box 1",
-    Callback = function(text)
-        print("Box 1 is now " .. text)
-    end
-}
-
---box:Set("New box text")
-
-local slider = section:Slider{
-    Name = "Slider",
-    Text = "[value]/1",
-    --Default = 0.1,
-    Min = 0,
-    Max = 1,
-    Float = 0.1,
-    Flag = "Slider 1",
-    Callback = function(value)
-        print("Slider 1 is now " .. value)
-    end
-}
-
---slider:Set(1)
-
-local dropdown = section:Dropdown{
-    Name = "Dropdown",
-    --Default = "Option 1",
-    Content = {
-        "Option 1",
-        "Option 2",
-        "Option 3"
-    },
-    Flag = "Dropdown 1",
-    Callback = function(option)
-        print("Dropdown 1 is now " .. tostring(option))
-    end
-}
-
-
-dropdown:Set() -- using this without any args or with wrong args will unset the dropdown
---dropdown:Set("option 6") wont work and will unset
-
-dropdown:Refresh{
-    "Refreshed option 1",
-    "Refreshed option 2",
-    "Refreshed option 3"
-}
-
-dropdown:Set("Refreshed option 1")
-
-dropdown:Add("Option 4")
-
-dropdown:Remove("Option 4")
-
-local multidropdown = section:Dropdown{
-    Name = "Multi dropdown",
-    --Default = {"Option 1"},
-    Max = 3, -- makes it multi
-    Content = {
-        "Option 1",
-        "Option 2",
-        "Option 3"
-    },
-    Flag = "Multi dropdown 1",
-    Callback = function(option)
-        print("Multi dropdown 1 is now " .. table.concat(option, ", "))
-    end
-}
-
-multidropdown:Set() -- using this without any args or with wrong args will unset the dropdown
-multidropdown:Set{} -- using this without any args or with wrong args will unset the dropdown
---multidropdown:Set{"option 12321313"} wont work and will unset
---multidropdown:Set("hello") wont work and will unset
-
-multidropdown:Refresh{
-    "Refreshed option 1",
-    "Refreshed option 2",
-    "Refreshed option 3",
-    "Refreshed option 4"
-}
-
-multidropdown:Set{
-    "Refreshed option 1",
-    "Refreshed option 2"
-}
-
-multidropdown:Add("Option 5")
-
-multidropdown:Remove("Option 5")
-
-local dropdown = section:Dropdown{
-    Name = "Scrolling Dropdown",
-    --Default = "Option 1",
-    Scrollable = true,
-    ScrollingMax = 5,
-    Content = {
-        "Option 1",
-        "Option 2",
-        "Option 3",
-        "Option 4",
-        "Option 5",
-        "Option 6",
-        "Option 7"
-    },
-    Flag = "Scrolling Dropdown 1",
-    Callback = function(option)
-        print("Scrolling Dropdown 1 is now " .. tostring(option))
-    end
-}
-
-local colorpicker = section:ColorPicker{
-    Name = "Color picker",
-    Default = Color3.fromRGB(0, 255, 0),
-    Flag = "Color picker 1",
-    Callback = function(color)
-        print("Color picker 1 is now: " .. string.format("%s, %s, %s, %s", math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255), math.floor(color.A * 100) / 100))
-    end
-}
-
---colorpicker:Set(Color3.fromRGB(255, 255, 255))
-
-local colorpickerpicker1 = colorpicker:ColorPicker{
-    Default = Color3.fromRGB(0, 255, 255),
-    DefaultAlpha = 0.5,
-    Flag = "Color picker picker 1",
-    Callback = function(color)
-        print("Color picker 1 picker 1 is now: " .. string.format("%s, %s, %s, %s", math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255), math.floor(color.A * 100) / 100))
-    end
-}
-
---colorpickerpicker1:Set(Color3.fromRGB(255, 255, 255))
-
-local colorpickerpicker2 = colorpicker:ColorPicker{
-    Default = Color3.fromRGB(255, 255, 255),
-    Flag = "Color picker picker 2",
-    Callback = function(color)
-        print("Color picker 1 picker 2 is now " .. string.format("%s, %s, %s, %s", math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255), math.floor(color.A * 100) / 100))
-    end
-}
-
---colorpickerpicker2:Set(Color3.fromRGB(255, 255, 255))
-
-local keybind = section:Keybind{
-    Name = "Keybind",
-    --Default = Enum.KeyCode.A,
-    --Blacklist = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2},
-    Flag = "Keybind 1",
-    Callback = function(key, fromsetting)
-        if fromsetting then
-            print("Keybind 1 is now " .. tostring(key))
-        else
-            print("Keybind 1 was pressed")
-        end
-    end
-}
 
 
 --library:SaveConfig("config", true) -- universal config
